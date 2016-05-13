@@ -28,7 +28,7 @@ import Foundation
 class InAppProductPurchaseRequest: NSObject, SKPaymentTransactionObserver {
 
     enum TransactionResult {
-        case Purchased(productId: String)
+        case Purchased(transaction: SKPaymentTransaction)
         case Restored(productId: String)
         case Failed(error: NSError)
     }
@@ -111,14 +111,14 @@ class InAppProductPurchaseRequest: NSObject, SKPaymentTransactionObserver {
             switch transactionState {
             case .Purchased:
                 if isPurchaseRequest {
-                    transactionResults.append(.Purchased(productId: transactionProductIdentifier))
+                    transactionResults.append(.Purchased(transaction: transaction))
                     paymentQueue.finishTransaction(transaction)
                 }
             case .Failed:
                 // TODO: How to discriminate between purchase and restore?
                 // It appears that in some edge cases transaction.error is nil here. Since returning an associated error is
                 // mandatory, return a default one if needed
-                let message = "Transaction failed for product ID: \(transactionProductIdentifier)"
+                let message = "Transaction failed for product ID: \(transaction)"
                 let altError = NSError(domain: SKErrorDomain, code: 0, userInfo: [ NSLocalizedDescriptionKey: message ])
                 transactionResults.append(.Failed(error: transaction.error ?? altError))
                 paymentQueue.finishTransaction(transaction)

@@ -136,8 +136,8 @@ extension ViewController {
 
     func alertForPurchaseResult(result: SwiftyStoreKit.PurchaseResult) -> UIAlertController {
         switch result {
-        case .Success(let productId):
-            print("Purchase Success: \(productId)")
+        case .Success(let transaction):
+            print("Purchase Success: \(transaction)")
             return alertWithTitle("Thank You", message: "Purchase completed")
         case .Error(let error):
             print("Purchase Failed: \(error)")
